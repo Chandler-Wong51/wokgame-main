@@ -112,6 +112,10 @@ class playWithAIUI(QWidget):
         if (self.winner is not None) or (self.whoseround == self.player_color) or (not self.is_gaming):
             return
         next_pos = self.ai_player.act(self.history_record)
+        d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('startgame'), self)
+        d.move(640, 170)
+        d.show()
+        t=1
         # 实例化一个棋子并显示
         c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
         c.move(QPoint(*Chesspos2Pixel(next_pos)))
@@ -132,7 +136,6 @@ class playWithAIUI(QWidget):
             return
         # 切换回合方(其实就是改颜色)
         self.nextRound()
-    '''改变落子方'''
     def nextRound(self):
         self.whoseround = self.player_color if self.whoseround == self.ai_color else self.ai_color
     '''显示游戏结束结果'''
