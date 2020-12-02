@@ -195,14 +195,6 @@ class gobangClient(QWidget):
         elif data['type'] == 'action' and data['detail'] == 'drop':
             pos = data['data']
             # 实例化一个棋子并显示
-            if self.whoseround ==self.opponent_player_color:
-                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
-                d.move(660, 170)
-                d.show()
-            else:
-                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
-                d.move(660, 170)
-                d.show()
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(QPoint(*Chesspos2Pixel(pos)))
             c.show()

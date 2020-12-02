@@ -45,7 +45,6 @@ class gobangSever(QWidget):
         palette.setBrush(self.backgroundRole(), QBrush(QPixmap(cfg.BACKGROUND_IMAGEPATHS.get('bg_game'))))
         self.setPalette(palette)
         # 显示你的昵称
-        self.nickname_label = QLabel('您是%s' % self.nickname, self)
         self.nickname_label.resize(200, 40)
         self.nickname_label.move(640, 180)
         # 落子标志
