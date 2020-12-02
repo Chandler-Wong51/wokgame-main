@@ -45,7 +45,7 @@ class playWithAIUI(QWidget):
         self.givein_button.move(640, 380)
         self.tip_button = PushButton(cfg.BUTTON_IMAGEPATHS.get('tip'), self)
         self.tip_button.click_signal.connect(self.tip)
-        self.tip_button.move(640, 450)
+        self.tip_button.move(630, 450)
         # 落子标志
         self.chessman_sign = QLabel(self)
         sign = QPixmap(cfg.CHESSMAN_IMAGEPATHS.get('sign'))
