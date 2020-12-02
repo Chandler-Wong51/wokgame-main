@@ -1,10 +1,6 @@
 '''
 Function:
     实现五子棋AI算法
-Author:
-    Charles
-微信公众号:
-    Charles的皮卡丘
 '''
 import random
 from itertools import product

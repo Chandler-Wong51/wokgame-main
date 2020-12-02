@@ -43,7 +43,7 @@ class playWithAIUI(QWidget):
         self.givein_button = PushButton(cfg.BUTTON_IMAGEPATHS.get('givein'), self)
         self.givein_button.click_signal.connect(self.givein)
         self.givein_button.move(640, 380)
-        self.tip_button = PushButton(cfg.BUTTON_IMAGEPATHS.get('givein'), self)
+        self.tip_button = PushButton(cfg.BUTTON_IMAGEPATHS.get('tip'), self)
         self.tip_button.click_signal.connect(self.tip)
         self.tip_button.move(640, 450)
         # 落子标志
