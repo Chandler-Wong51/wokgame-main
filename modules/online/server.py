@@ -224,7 +224,7 @@ class gobangSever(QWidget):
                 pre_round = self.history_record.pop(-1)
                 self.chessboard[pre_round[0]][pre_round[1]].close()
                 self.chessboard[pre_round[0]][pre_round[1]] = None
-                self.chessman_sign.hide()
+                self.chessman_sign.show()
                 self.nextRound()
                 data = {'type': 'reply', 'detail': 'regret', 'data': True}
                 self.tcp_socket.sendall(packSocketData(data))
