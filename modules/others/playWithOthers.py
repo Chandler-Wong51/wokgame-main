@@ -152,7 +152,7 @@ class playWithOthersUI(QWidget):
     def regret(self):
         if (self.winner is not None) or (len(self.history_record) == 0) or (not self.is_gaming) :
             return
-        for _ in range(2):
+        for _ in range(1):
             pre_round = self.history_record.pop(-1)
             self.chessboard[pre_round[0]][pre_round[1]].close()
             self.chessboard[pre_round[0]][pre_round[1]] = None
