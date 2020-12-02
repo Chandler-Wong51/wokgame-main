@@ -167,11 +167,16 @@ class playWithAIUI(QWidget):
     def regret(self):
         if (self.winner is not None) or (len(self.history_record) == 0) or (not self.is_gaming) and (self.whoseround != self.player_color):
             return
-        for _ in range(2):
-            pre_round = self.history_record.pop(-1)
-            self.chessboard[pre_round[0]][pre_round[1]].close()
-            self.chessboard[pre_round[0]][pre_round[1]] = None
-        self.chessman_sign.hide()
+        pre_round = self.history_record.pop(-1)
+        self.chessboard[pre_round[0]][pre_round[1]].close()
+        self.chessboard[pre_round[0]][pre_round[1]] = None
+        pre_round = self.history_record.pop(-1)
+        self.chessboard[pre_round[0]][pre_round[1]].close()
+        self.chessboard[pre_round[0]][pre_round[1]] = None
+        c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
+        c.move(QPoint(*Chesspos2Pixel(pre_round)))
+        self.chessman_sign.move(c.pos())
+        self.chessman_sign.show()
     '''开始游戏-之前的对弈必须已经结束才行'''
     def startgame(self):
         if self.is_gaming:
