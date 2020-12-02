@@ -132,6 +132,9 @@ class gobangSever(QWidget):
             if self.chessboard[pos[0]][pos[1]]:
                 return
             # 实例化一个棋子并显示
+            d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
+            d.move(660, 170)
+            d.show()
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(event.pos())
             c.show()

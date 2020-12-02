@@ -83,6 +83,9 @@ class playWithAIUI(QWidget):
             if self.chessboard[pos[0]][pos[1]]:
                 return
             # 实例化一个棋子并显示
+            d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
+            d.move(660, 170)
+            d.show()
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(event.pos())
             c.show()
@@ -112,10 +115,9 @@ class playWithAIUI(QWidget):
         if (self.winner is not None) or (self.whoseround == self.player_color) or (not self.is_gaming):
             return
         next_pos = self.ai_player.act(self.history_record)
-        d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('startgame'), self)
-        d.move(640, 170)
+        d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
+        d.move(660, 170)
         d.show()
-        t=1
         # 实例化一个棋子并显示
         c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
         c.move(QPoint(*Chesspos2Pixel(next_pos)))
@@ -165,16 +167,11 @@ class playWithAIUI(QWidget):
     def regret(self):
         if (self.winner is not None) or (len(self.history_record) == 0) or (not self.is_gaming) and (self.whoseround != self.player_color):
             return
-        pre_round = self.history_record.pop(-1)
-        self.chessboard[pre_round[0]][pre_round[1]].close()
-        self.chessboard[pre_round[0]][pre_round[1]] = None
-        pre_round = self.history_record.pop(-1)
-        self.chessboard[pre_round[0]][pre_round[1]].close()
-        self.chessboard[pre_round[0]][pre_round[1]] = None
-        c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
-        c.move(QPoint(*Chesspos2Pixel(pre_round)))
-        self.chessman_sign.move(c.pos())
-        self.chessman_sign.show()
+        for _ in range(2):
+            pre_round = self.history_record.pop(-1)
+            self.chessboard[pre_round[0]][pre_round[1]].close()
+            self.chessboard[pre_round[0]][pre_round[1]] = None
+        self.chessman_sign.hide()
     '''开始游戏-之前的对弈必须已经结束才行'''
     def startgame(self):
         if self.is_gaming:
