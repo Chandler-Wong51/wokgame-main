@@ -87,6 +87,7 @@ class playWithOthersUI(QWidget):
                 d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
                 d.move(660, 170)
                 d.show()
+            #回合方提示
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(event.pos())
             c.show()
@@ -163,9 +164,19 @@ class playWithOthersUI(QWidget):
         pre_round = self.history_record.pop(-1)
         self.chessboard[pre_round[0]][pre_round[1]].close()
         self.chessboard[pre_round[0]][pre_round[1]] = None
-        #self.chessman_sign.move(QPoint(*Chesspos2Pixel(pre_round)))
+        c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
+        c.move(QPoint(*Chesspos2Pixel(pre_round)))
+        self.chessman_sign.move(c.pos())
         self.chessman_sign.show()
         self.nextRound()
+        if self.whoseround == self.player1_color:
+            d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
+            d.move(660, 170)
+            d.show()
+        else:
+            d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
+            d.move(660, 170)
+            d.show()
     '''开始游戏-之前的对弈必须已经结束才行'''
     def startgame(self):
         if self.is_gaming:
