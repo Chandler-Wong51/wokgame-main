@@ -14,14 +14,30 @@ from modules.misc.Chessman import *
 from modules.ai.aiGobang import aiGobang
 import time
 
-
 '''人机对战'''
+
+
 class playWithAIUI(QWidget):
     back_signal = pyqtSignal()
     exit_signal = pyqtSignal()
     send_back_signal = False
+
     def __init__(self, cfg, parent=None, **kwargs):
         super(playWithAIUI, self).__init__(parent)
+        self.time_label = QLabel(self)
+        self.palette_ = QPalette(self)
+        self.palette_.setColor(QPalette.Window, Qt.blue)
+        self.time_label.setPalette(self.palette_)
+        self.time_label.setAlignment(Qt.AlignCenter)
+        self.time_label.setAutoFillBackground(True)
+        self.time_label.move(660, 100)
+        self.time_label.resize(50, 30)
+        self.player_time = {'black': 300, 'white': 300}
+        self.timer = QTimer(self)  # 初始化计时器
+        self.time_label.setText('05:00')
+        self.timer.timeout.connect(self.operate)
+        self.timer.setInterval(1000)  # 设置计时间隔并启动；单位毫秒
+        # 时间组件
         self.cfg = cfg
         self.setFixedSize(760, 650)
         self.setWindowTitle('人机对战——可圈可点五子棋')
@@ -71,10 +87,24 @@ class playWithAIUI(QWidget):
         # 落子声音加载
         pygame.mixer.init()
         self.drop_sound = pygame.mixer.Sound(cfg.SOUNDS_PATHS.get('drop'))
+
+    def setup_ui(self):
+        self.timer.start()
+
+    def operate(self):
+        self.player_time[self.whoseround] = self.player_time[self.whoseround] - 1
+        self.time_label.setText(self.change_second_to_time(self.player_time[self.whoseround]))
+
+    def change_second_to_time(self, a):
+        stra = '0' + str(a // 60) + ':' + str(a % 60).rjust(2, '0')
+        return stra
+
     '''鼠标左键点击事件-玩家回合'''
+
     def mousePressEvent(self, event):
-		
-        if (event.buttons() != QtCore.Qt.LeftButton) or (self.winner is not None) or (self.whoseround != self.player_color) or (not self.is_gaming):
+
+        if (event.buttons() != QtCore.Qt.LeftButton) or (self.winner is not None) or (
+                self.whoseround != self.player_color) or (not self.is_gaming):
             return
         # 保证只在棋盘范围内响应
         if event.x() >= 50 and event.x() <= 50 + 30 * 18 + 14 and event.y() >= 50 and event.y() <= 50 + 30 * 18 + 14:
@@ -83,6 +113,7 @@ class playWithAIUI(QWidget):
             if self.chessboard[pos[0]][pos[1]]:
                 return
             # 实例化一个棋子并显示
+            self.setup_ui()
             d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
             d.move(660, 170)
             d.show()
@@ -105,12 +136,16 @@ class playWithAIUI(QWidget):
                 return
             # 切换回合方(其实就是改颜色)
             self.nextRound()
+
     '''鼠标左键释放操作-调用电脑回合'''
+
     def mouseReleaseEvent(self, event):
         if (self.winner is not None) or (self.whoseround != self.ai_color) or (not self.is_gaming):
             return
         self.aiAct()
+
     '''电脑自动下-AI回合'''
+
     def aiAct(self):
         if (self.winner is not None) or (self.whoseround == self.player_color) or (not self.is_gaming):
             return
@@ -139,10 +174,13 @@ class playWithAIUI(QWidget):
         # 切换回合方(其实就是改颜色)
         self.nextRound()
 
-            # event loop
+        # event loop
+
     def nextRound(self):
         self.whoseround = self.player_color if self.whoseround == self.ai_color else self.ai_color
+
     '''显示游戏结束结果'''
+
     def showGameEndInfo(self):
         self.is_gaming = False
         info_img = QPixmap(self.cfg.WIN_IMAGEPATHS.get(self.winner))
@@ -151,6 +189,7 @@ class playWithAIUI(QWidget):
         self.winner_info_label.resize(info_img.size())
         self.winner_info_label.move(50, 50)
         self.winner_info_label.show()
+
     def tip(self):
         if (self.winner is not None) or (not self.is_gaming) and (self.whoseround != self.player_color):
             return
@@ -159,15 +198,19 @@ class playWithAIUI(QWidget):
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get('sign'), self)
             c.move(QPoint(*Chesspos2Pixel(next_pos)))
             c.show()
-                
+
     '''认输'''
+
     def givein(self):
         if self.is_gaming and (self.winner is None) and (self.whoseround == self.player_color):
             self.winner = self.ai_color
             self.showGameEndInfo()
+
     '''悔棋-只有我方回合的时候可以悔棋'''
+
     def regret(self):
-        if (self.winner is not None) or (len(self.history_record) == 0) or (not self.is_gaming) and (self.whoseround != self.player_color):
+        if (self.winner is not None) or (len(self.history_record) == 0) or (not self.is_gaming) and (
+                self.whoseround != self.player_color):
             return
         pre_round = self.history_record.pop(-1)
         self.chessboard[pre_round[0]][pre_round[1]].close()
@@ -179,7 +222,9 @@ class playWithAIUI(QWidget):
         c.move(QPoint(*Chesspos2Pixel(pre_round)))
         self.chessman_sign.move(c.pos())
         self.chessman_sign.show()
+
     '''开始游戏-之前的对弈必须已经结束才行'''
+
     def startgame(self):
         if self.is_gaming:
             return
@@ -194,11 +239,15 @@ class playWithAIUI(QWidget):
         self.winner_info_label = None
         self.history_record.clear()
         self.chessman_sign.hide()
+
     '''关闭窗口事件'''
+
     def closeEvent(self, event):
         if not self.send_back_signal:
             self.exit_signal.emit()
+
     '''返回游戏主页面'''
+
     def goHome(self):
         self.send_back_signal = True
         self.close()
