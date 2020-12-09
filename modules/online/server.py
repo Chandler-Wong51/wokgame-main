@@ -1,10 +1,6 @@
 '''
 Function:
     联机对战服务器端
-Author:
-    Charles
-微信公众号:
-    Charles的皮卡丘
 '''
 import socket
 import pygame
@@ -42,14 +38,13 @@ class gobangSever(QWidget):
         self.whoseround = None
         # 当前窗口的基本设置
         self.setFixedSize(760, 650)
-        self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘')
+        self.setWindowTitle('可圈可点五子棋-联机对战')
         self.setWindowIcon(QIcon(cfg.ICON_FILEPATH))
         # 背景图片
         palette = QPalette()
         palette.setBrush(self.backgroundRole(), QBrush(QPixmap(cfg.BACKGROUND_IMAGEPATHS.get('bg_game'))))
         self.setPalette(palette)
         # 显示你的昵称
-        self.nickname_label = QLabel('您是%s' % self.nickname, self)
         self.nickname_label.resize(200, 40)
         self.nickname_label.move(640, 180)
         # 落子标志
@@ -132,9 +127,14 @@ class gobangSever(QWidget):
             if self.chessboard[pos[0]][pos[1]]:
                 return
             # 实例化一个棋子并显示
-            d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
-            d.move(660, 170)
-            d.show()
+            if self.whoseround ==self.opponent_player_color:
+                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
+                d.move(660, 170)
+                d.show()
+            else:
+                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
+                d.move(660, 170)
+                d.show()
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(event.pos())
             c.show()
@@ -180,7 +180,7 @@ class gobangSever(QWidget):
                 data = {'type': 'reply', 'detail': 'startgame', 'data': True}
                 self.tcp_socket.sendall(packSocketData(data))
                 self.is_gaming = True
-                self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘 ——> %s走棋' % self.whoseround2nickname_dict.get(self.whoseround))
+                self.setWindowTitle('可圈可点五子棋-联机对战')
                 for i, j in product(range(19), range(19)):
                     if self.chessboard[i][j]:
                         self.chessboard[i][j].close()
@@ -197,6 +197,14 @@ class gobangSever(QWidget):
         elif data['type'] == 'action' and data['detail'] == 'drop':
             pos = data['data']
             # 实例化一个棋子并显示
+            if self.whoseround ==self.opponent_player_color:
+                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
+                d.move(660, 170)
+                d.show()
+            else:
+                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
+                d.move(660, 170)
+                d.show()
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(QPoint(*Chesspos2Pixel(pos)))
             c.show()
@@ -237,7 +245,7 @@ class gobangSever(QWidget):
         elif data['type'] == 'reply' and data['detail'] == 'startgame':
             if data['data']:
                 self.is_gaming = True
-                self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘 ——> %s走棋' % self.whoseround2nickname_dict.get(self.whoseround))
+                self.setWindowTitle('可圈可点五子棋-联机对战')
                 for i, j in product(range(19), range(19)):
                     if self.chessboard[i][j]:
                         self.chessboard[i][j].close()
@@ -271,14 +279,14 @@ class gobangSever(QWidget):
     '''改变落子方'''
     def nextRound(self):
         self.whoseround = self.player_color if self.whoseround == self.opponent_player_color else self.opponent_player_color
-        self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘 ——> %s走棋' % self.whoseround2nickname_dict.get(self.whoseround))
+        self.setWindowTitle('可圈可点五子棋-联机对战')
     '''开始监听客户端的连接'''
     def startListen(self):
         while True:
             try:
-                self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘 ——> 服务器端启动成功, 等待客户端连接中')
+                self.setWindowTitle('可圈可点五子棋-联机对战 ——> 服务器端启动成功, 等待客户端连接中')
                 self.tcp_socket, self.client_ipport = self.tcp_server.accept()
-                self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘 ——> 客户端已连接, 点击开始按钮进行游戏')
+                self.setWindowTitle('可圈可点五子棋-联机对战 ——> 客户端已连接, 点击开始按钮进行游戏')
                 data = {'type': 'nickname', 'data': self.nickname}
                 self.tcp_socket.sendall(packSocketData(data))
                 self.receiveClientData()

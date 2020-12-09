@@ -38,7 +38,7 @@ class gobangClient(QWidget):
         self.whoseround = None
         # 当前窗口的基本设置
         self.setFixedSize(760, 650)
-        self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘')
+        self.setWindowTitle('可圈可点五子棋-联机对战')
         self.setWindowIcon(QIcon(cfg.ICON_FILEPATH))
         # 背景图片
         palette = QPalette()
@@ -82,7 +82,7 @@ class gobangClient(QWidget):
         self.tcp_socket.connect(self.server_ipport)
         data = {'type': 'nickname', 'data': self.nickname}
         self.tcp_socket.sendall(packSocketData(data))
-        self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘 ——> 已经成功连接服务器, 点击开始按钮进行游戏')
+        self.setWindowTitle('可圈可点五子棋-联机对战，已经成功连接服务器, 点击开始按钮进行游戏')
         # 开一个线程进行监听
         threading.Thread(target=self.receiveServerData).start()
     '''返回游戏主界面'''
@@ -125,9 +125,14 @@ class gobangClient(QWidget):
             if self.chessboard[pos[0]][pos[1]]:
                 return
             # 实例化一个棋子并显示
-            d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
-            d.move(660, 170)
-            d.show()
+            if self.whoseround ==self.opponent_player_color:
+                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
+                d.move(660, 170)
+                d.show()
+            else:
+                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
+                d.move(660, 170)
+                d.show()
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(event.pos())
             c.show()
@@ -173,7 +178,7 @@ class gobangClient(QWidget):
                 data = {'type': 'reply', 'detail': 'startgame', 'data': True}
                 self.tcp_socket.sendall(packSocketData(data))
                 self.is_gaming = True
-                self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘 ——> %s走棋' % self.whoseround2nickname_dict.get(self.whoseround))
+                self.setWindowTitle('可圈可点五子棋-联机对战' )
                 for i, j in product(range(19), range(19)):
                     if self.chessboard[i][j]:
                         self.chessboard[i][j].close()
@@ -230,7 +235,7 @@ class gobangClient(QWidget):
         elif data['type'] == 'reply' and data['detail'] == 'startgame':
             if data['data']:
                 self.is_gaming = True
-                self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘 ——> %s走棋' % self.whoseround2nickname_dict.get(self.whoseround))
+                self.setWindowTitle('可圈可点五子棋-联机对战' )
                 for i, j in product(range(19), range(19)):
                     if self.chessboard[i][j]:
                         self.chessboard[i][j].close()
@@ -264,7 +269,7 @@ class gobangClient(QWidget):
     '''改变落子方'''
     def nextRound(self):
         self.whoseround = self.player_color if self.whoseround == self.opponent_player_color else self.opponent_player_color
-        self.setWindowTitle('五子棋-微信公众号: Charles的皮卡丘 ——> %s走棋' % self.whoseround2nickname_dict.get(self.whoseround))
+        self.setWindowTitle('可圈可点五子棋-联机对战')
     '''接收服务器端数据'''
     def receiveServerData(self):
         while True:
