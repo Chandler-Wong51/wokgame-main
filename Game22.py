@@ -11,7 +11,6 @@ from modules.misc.Buttons import *
 from modules.ai.playWithAI import *
 from modules.online.playOnline import *
 from modules.others.playWithOthers import *
-#成旭测试No.1
 
 
 '''游戏开始界面'''

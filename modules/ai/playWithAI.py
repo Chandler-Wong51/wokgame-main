@@ -86,8 +86,6 @@ class playWithAIUI(QWidget):
             d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
             d.move(660, 170)
             d.show()
-            pygame.time.Clock().tick()
-            print(pygame.time.Clock().get_time)
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(event.pos())
             c.show()
@@ -140,7 +138,8 @@ class playWithAIUI(QWidget):
             return
         # 切换回合方(其实就是改颜色)
         self.nextRound()
-        pygame.time.Clock().tick()
+
+            # event loop
     def nextRound(self):
         self.whoseround = self.player_color if self.whoseround == self.ai_color else self.ai_color
     '''显示游戏结束结果'''
