@@ -237,6 +237,14 @@ class gobangSever(QWidget):
                 self.chessboard[pre_round[0]][pre_round[1]] = None
                 self.chessman_sign.show()
                 self.nextRound()
+                if self.whoseround == self.player1_color:
+                    d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
+                    d.move(660, 170)
+                    d.show()
+                else:
+                    d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
+                    d.move(660, 170)
+                    d.show()
                 data = {'type': 'reply', 'detail': 'regret', 'data': True}
                 self.tcp_socket.sendall(packSocketData(data))
             else:
