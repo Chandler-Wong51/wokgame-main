@@ -22,6 +22,19 @@ class playWithOthersUI(QWidget):
     send_back_signal = False
     def __init__(self, cfg, parent=None, **kwargs):
         super(playWithOthersUI, self).__init__(parent)
+        self.time_label = QLabel(self)
+        self.fonth = QFont('Microsoft YaHei', 13, 75)
+        self.time_label = QLabel(self)
+        self.time_label.setFont(self.fonth)
+        self.time_label.setAlignment(Qt.AlignCenter)
+        self.time_label.move(650, 100)
+        self.time_label.resize(70, 30)
+        self.player_time = {'black': 300, 'white': 300}
+        self.timer = QTimer(self)  # 初始化计时器
+        self.time_label.setText('05:00')
+        self.timer.timeout.connect(self.operate)
+        self.timer.setInterval(1000)  # 设置计时间隔并启动；单位毫秒
+        #time_model
         self.cfg = cfg
         self.setFixedSize(760, 650)
         self.setWindowTitle('人人对战——可圈可点五子棋')
@@ -68,6 +81,15 @@ class playWithOthersUI(QWidget):
         # 落子声音加载
         pygame.mixer.init()
         self.drop_sound = pygame.mixer.Sound(cfg.SOUNDS_PATHS.get('drop'))
+    def setup_ui(self):
+        self.timer.start()
+
+    def operate(self):
+        self.player_time[self.whoseround] = self.player_time[self.whoseround] - 1
+        self.time_label.setText(self.change_second_to_time(self.player_time[self.whoseround]))
+    def change_second_to_time(self, a):
+        stra = '0' + str(a // 60) + ':' + str(a % 60).rjust(2, '0')
+        return stra
     '''鼠标左键点击事件-玩家回合'''
     def mousePressEvent(self, event):
         if (event.buttons() != QtCore.Qt.LeftButton) or (self.winner is not None) or(not self.is_gaming):
@@ -79,14 +101,16 @@ class playWithOthersUI(QWidget):
             if self.chessboard[pos[0]][pos[1]]:
                 return
             # 实例化一个棋子并显示
+
             if self.whoseround ==self.player1_color:
-                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
-                d.move(660, 170)
-                d.show()
-            else:
                 d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn2'), self)
                 d.move(660, 170)
                 d.show()
+            else:
+                d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
+                d.move(660, 170)
+                d.show()
+            self.setup_ui()
             #回合方提示
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(event.pos())

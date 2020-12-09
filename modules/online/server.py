@@ -24,6 +24,22 @@ class gobangSever(QWidget):
     def __init__(self, cfg, nickname, parent=None, **kwargs):
         super(gobangSever, self).__init__(parent)
         # 预定义一些必要的变量
+        self.time_label = QLabel(self)
+        self.fonth = QFont('Microsoft YaHei', 13, 75)
+        self.time_label = QLabel(self)
+        self.time_label.setFont(self.fonth)
+        # palette_1 = QPalette(self)
+        # palette_1.setColor(QPalette.Window,Qt.blue)
+        # self.time_label.setPalette(palette_1)
+        self.time_label.setAlignment(Qt.AlignCenter)
+        self.time_label.move(650, 100)
+        self.time_label.resize(70, 30)
+        self.player_time = {'black': 300, 'white': 300}
+        self.timer = QTimer(self)  # 初始化计时器
+        self.time_label.setText('05:00')
+        self.timer.timeout.connect(self.operate)
+        self.timer.setInterval(1000)  # 设置计时间隔并启动；单位毫秒
+        # 时间组件
         self.cfg = cfg
         self.nickname = nickname
         self.opponent_nickname = None
@@ -135,6 +151,7 @@ class gobangSever(QWidget):
                 d = PushButton(self.cfg.BUTTON_IMAGEPATHS.get('turn1'), self)
                 d.move(660, 170)
                 d.show()
+            self.setup_ui()
             c = Chessman(self.cfg.CHESSMAN_IMAGEPATHS.get(self.whoseround), self)
             c.move(event.pos())
             c.show()

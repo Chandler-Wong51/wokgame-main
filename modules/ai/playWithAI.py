@@ -25,13 +25,15 @@ class playWithAIUI(QWidget):
     def __init__(self, cfg, parent=None, **kwargs):
         super(playWithAIUI, self).__init__(parent)
         self.time_label = QLabel(self)
-        self.palette_ = QPalette(self)
-        self.palette_.setColor(QPalette.Window, Qt.blue)
-        self.time_label.setPalette(self.palette_)
+        self.fonth = QFont('Microsoft YaHei', 13, 75)
+        self.time_label = QLabel(self)
+        self.time_label.setFont(self.fonth)
+        #palette_1 = QPalette(self)
+        #palette_1.setColor(QPalette.Window,Qt.blue)
+        #self.time_label.setPalette(palette_1)
         self.time_label.setAlignment(Qt.AlignCenter)
-        self.time_label.setAutoFillBackground(True)
-        self.time_label.move(660, 100)
-        self.time_label.resize(50, 30)
+        self.time_label.move(650, 100)
+        self.time_label.resize(70, 30)
         self.player_time = {'black': 300, 'white': 300}
         self.timer = QTimer(self)  # 初始化计时器
         self.time_label.setText('05:00')

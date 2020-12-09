@@ -24,6 +24,7 @@ class gobangClient(QWidget):
     def __init__(self, cfg, nickname, server_ip, parent=None, **kwargs):
         super(gobangClient, self).__init__(parent)
         # 预定义一些必要的变量
+
         self.cfg = cfg
         self.nickname = nickname
         self.opponent_nickname = None
@@ -114,6 +115,17 @@ class gobangClient(QWidget):
             data = {'type': 'action', 'detail': 'urge'}
             self.tcp_socket.sendall(packSocketData(data))
             self.urge_sound.play()
+    def setup_ui(self):
+        self.timer.start()
+
+    def operate(self):
+        self.player_time[self.whoseround] = self.player_time[self.whoseround] - 1
+        self.time_label.setText(self.change_second_to_time(self.player_time[self.whoseround]))
+
+    def change_second_to_time(self, a):
+        stra = '0' + str(a // 60) + ':' + str(a % 60).rjust(2, '0')
+        return stra
+
     '''鼠标左键点击事件-玩家回合'''
     def mousePressEvent(self, event):
         if (event.buttons() != QtCore.Qt.LeftButton) or (self.winner is not None) or (self.whoseround != self.player_color) or (not self.is_gaming):
